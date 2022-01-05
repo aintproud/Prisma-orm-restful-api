@@ -1,0 +1,33 @@
+
+datasource db{
+    provider = "postgresql"
+    url = env("URL")
+}
+generator client{
+    provider="prisma-client-js"
+}
+
+model Dishes{
+    id Int @id @default(autoincrement())
+    naming String @unique
+    ingredients String[]
+    timeInMinutes Int
+    priceInDollars Int
+    hit Boolean?
+    saleInPercents Int?
+}
+model Drinks{
+    id Int @id @default(autoincrement())
+    naming String @unique
+    volumeInMl Int 
+    priceInDollars Int
+    hit Boolean?
+    saleInPercents Int?
+}
+
+
+
+
+
+
+
