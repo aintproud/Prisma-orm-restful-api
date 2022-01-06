@@ -1,0 +1,8 @@
+GET http://localhost:8080/drinks 
+###
+GET http://localhost:8080/dishes 
+###
+DELETE http://localhost:8080/drinks/Tea
+###
+PUT http://localhost:8080/drinks/Tea
+{"newNaming": "Coffee"}

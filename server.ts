@@ -1,5 +1,5 @@
-import pkg from '@prisma/client'
-const {PrismaClient} = pkg
+import {PrismaClient} from '@prisma/client'
+// const {PrismaClient} = pkg
 import express from 'express';
 const app = express();
 const prisma = new PrismaClient()
@@ -10,7 +10,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: true}));
 
 app.post('/drinks', async(req, res)=>{
-    const {
+    try {const {
         naming, 
         volumeInMl, 
         priceInDollars, 
@@ -27,10 +27,14 @@ app.post('/drinks', async(req, res)=>{
             saleInPercents
         }
     })
-    res.json(create)
+    res.json(create)}
+    catch(e){
+        console.log(e)
+        res.json({"error": e})
+    }
 })
 app.post('/dishes', async(req, res)=>{
-    const {
+    try{const {
         naming, 
         ingredients, 
         timeInMinutes, 
@@ -41,34 +45,44 @@ app.post('/dishes', async(req, res)=>{
 
     const create = await prisma.dishes.create({
         data:{
-            naming: String(naming),
-            ingredients: Array<string>(ingredients),
-            timeInMinutes: Number(timeInMinutes),
-            priceInDollars: Number(priceInDollars),
-            hit: Boolean(hit),
-            saleInPercents: Number(saleInPercents)
+            naming,
+            ingredients,
+            timeInMinutes,
+            priceInDollars,
+            hit,
+            saleInPercents
         }
     })
-    res.json(create)
+    res.json(create)}
+    catch(e){
+        console.log(e)
+        res.json({"error": e})
+    }
 })
 
 app.delete('/drinks/:naming', async (req, res) => {
-    const drinkNaming = req.params.naming;
+    try {const {naming} = req.params;
     const destruction = prisma.drinks.delete({
-        where:{naming:drinkNaming}
+        where:{naming: naming}
     })
-    res.json(destruction);
+    res.json(destruction);}
+    catch(e){
+        res.json({"error": e})
+    }
 })
 app.delete('/dishes/:naming', async (req, res) => {
-    const drinkNaming = req.params.naming;
+    try{const {naming} = req.params;
     const destruction = prisma.dishes.delete({
-        where:{naming:drinkNaming}
+        where:{naming: naming}
     })
-    res.json(destruction);
+    res.json(destruction);}
+    catch(e){
+        res.json({"error": e})
+    }
 })
 
 app.put('/drinks/:naming', async (req, res) => {
-    const naming = req.params.naming;
+    const {naming} = req.params;
     const {
         newNaming,
         newVolume, 
@@ -79,11 +93,11 @@ app.put('/drinks/:naming', async (req, res) => {
     const put = await prisma.drinks.update({
         where: {naming: String(naming)},
         data: {
-            naming: String(newNaming),
-            volumeInMl: Number(newVolume),
-            priceInDollars: Number(newPriceInDollars),
-            hit: Boolean(newHit),
-            saleInPercents: Number(newSaleInPercents)
+            naming: newNaming,
+            volumeInMl: newVolume,
+            priceInDollars: newPriceInDollars,
+            hit: newHit,
+            saleInPercents: newSaleInPercents
         }
     })
     res.json(put); 
@@ -101,19 +115,19 @@ app.put('/drinks/:naming', async (req, res) => {
     const put = await prisma.dishes.update({
         where: {naming: String(naming)},
         data: {
-            naming: String(newNaming),
-            ingredients: Array<string>(newIngredients),
-            priceInDollars: Number(newPriceInDollars),
-            timeInMinutes: Number(newTimeInMinutes),
-            hit: Boolean(newHit),
-            saleInPercents: Number(newSaleInPercents)
+            naming: newNaming,
+            ingredients: newIngredients,
+            priceInDollars:newPriceInDollars,
+            timeInMinutes: newTimeInMinutes,
+            hit: newHit,
+            saleInPercents: newSaleInPercents
         }
     })
     res.json(put); 
 })
 
 app.get('/drinks', async (req, res) => {
-    const drinks = await prisma.dishes.findMany()
+    const drinks = await prisma.drinks.findMany()
     res.json(drinks)
 })
 app.get('/dishes', async (req, res) => {
