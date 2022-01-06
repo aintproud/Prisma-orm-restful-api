@@ -4,28 +4,30 @@ import express from 'express';
 const app = express();
 const prisma = new PrismaClient()
 const port = process.env.PORT || 8080;
+import bodyparser from 'body-parser'
+
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({extended: true}));
 
 app.post('/drinks', async(req, res)=>{
     const {
         naming, 
-        ingredients, 
-        timeInMinutes, 
+        volumeInMl, 
         priceInDollars, 
         hit, 
         saleInPercents
-    } = req.body||undefined
+    } = req.body
 
-    const result = await prisma.dishes.create({
-        data:{
-            naming: naming,
-            ingredients: ingredients,
-            timeInMinutes: timeInMinutes,
-            priceInDollars: priceInDollars,
-            hit: hit,
-            saleInPercents: saleInPercents
+    const create = await prisma.drinks.create({
+        data: {
+            naming,
+            volumeInMl,
+            priceInDollars,
+            hit,
+            saleInPercents
         }
     })
-    req.json(result)
+    res.json(create)
 })
 app.post('/dishes', async(req, res)=>{
     const {
@@ -35,30 +37,30 @@ app.post('/dishes', async(req, res)=>{
         priceInDollars, 
         hit, 
         saleInPercents
-    } = req.body||undefined
+    } = req.body
 
-    const result = await prisma.dishes.create({
+    const create = await prisma.dishes.create({
         data:{
-            naming: naming,
-            ingredients: ingredients,
-            timeInMinutes: timeInMinutes,
-            priceInDollars: priceInDollars,
-            hit: hit,
-            saleInPercents: saleInPercents
+            naming: String(naming),
+            ingredients: Array<string>(ingredients),
+            timeInMinutes: Number(timeInMinutes),
+            priceInDollars: Number(priceInDollars),
+            hit: Boolean(hit),
+            saleInPercents: Number(saleInPercents)
         }
     })
-    req.json(result)
+    res.json(create)
 })
 
 app.delete('/drinks/:naming', async (req, res) => {
-    const drinkNaming = req.params.name;
+    const drinkNaming = req.params.naming;
     const destruction = prisma.drinks.delete({
         where:{naming:drinkNaming}
     })
     res.json(destruction);
 })
 app.delete('/dishes/:naming', async (req, res) => {
-    const drinkNaming = req.params.name;
+    const drinkNaming = req.params.naming;
     const destruction = prisma.dishes.delete({
         where:{naming:drinkNaming}
     })
@@ -68,41 +70,47 @@ app.delete('/dishes/:naming', async (req, res) => {
 app.put('/drinks/:naming', async (req, res) => {
     const naming = req.params.naming;
     const {
-        ingredients, 
-        timeInMinutes, 
-        priceInDollars, 
-        hit, 
-        saleInPercents
-    } = req.body||undefined
+        newNaming,
+        newVolume, 
+        newPriceInDollars, 
+        newHit, 
+        newSaleInPercents
+    } = req.body
     const put = await prisma.drinks.update({
-        where: {naming: naming},
+        where: {naming: String(naming)},
         data: {
-            
+            naming: String(newNaming),
+            volumeInMl: Number(newVolume),
+            priceInDollars: Number(newPriceInDollars),
+            hit: Boolean(newHit),
+            saleInPercents: Number(newSaleInPercents)
         }
-
     })
     res.json(put); 
 })
-app.put('/dishes/:id', async (req, res) => {
-    const { id } = req.params
-  
-    try {
-      const postData = await prisma.dishes.findUnique({
-        where: { id: Number(id) },
-        select: {
-          published: true,
-        },
-      })
-  
-      const updatedPost = await prisma.dishes.update({
-        where: { id: Number(id) || undefined },
-        data: { published: !postData?.published },
-      })
-      res.json(updatedPost)
-    } catch (error) {
-      res.json({ error: `Post with ID ${id} does not exist in the database` })
-    }
-  })
+app.put('/drinks/:naming', async (req, res) => {
+    const {naming} = req.params;
+    const {
+        newNaming,
+        newIngredients, 
+        newTimeInMinutes,
+        newPriceInDollars, 
+        newHit, 
+        newSaleInPercents
+    } = req.body
+    const put = await prisma.dishes.update({
+        where: {naming: String(naming)},
+        data: {
+            naming: String(newNaming),
+            ingredients: Array<string>(newIngredients),
+            priceInDollars: Number(newPriceInDollars),
+            timeInMinutes: Number(newTimeInMinutes),
+            hit: Boolean(newHit),
+            saleInPercents: Number(newSaleInPercents)
+        }
+    })
+    res.json(put); 
+})
 
 app.get('/drinks', async (req, res) => {
     const drinks = await prisma.dishes.findMany()

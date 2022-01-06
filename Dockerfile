@@ -8,6 +8,7 @@ RUN npm i
 
 COPY . .
 
+
 EXPOSE 2000
 
-CMD ["node", "server.js"]
+CMD ["node", "server"]

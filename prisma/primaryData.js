@@ -53,11 +53,6 @@ async function dbFiller(){
 
 
 dbFiller()
-  .catch(e => {
-    console.log(e)
-    process.exit(1)
-  }).finally(() => {await prisma.$disconnect()})
- 
 
 
 
