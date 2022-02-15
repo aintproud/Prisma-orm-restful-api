@@ -1,5 +1,4 @@
 import {PrismaClient} from '@prisma/client'
-// const {PrismaClient} = pkg
 import express from 'express';
 const app = express();
 const prisma = new PrismaClient()
@@ -10,7 +9,8 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: true}));
 
 app.post('/drinks', async(req, res)=>{
-    try {const {
+    try {
+        const {
         naming, 
         volumeInMl, 
         priceInDollars, 
@@ -20,14 +20,15 @@ app.post('/drinks', async(req, res)=>{
 
     const create = await prisma.drinks.create({
         data: {
-            naming,
-            volumeInMl,
-            priceInDollars,
-            hit,
-            saleInPercents
+            naming: naming,
+            volumeInMl: volumeInMl,
+            priceInDollars: priceInDollars,
+            hit: hit,
+            saleInPercents: saleInPercents
         }
     })
-    res.json(create)}
+    res.json(create)
+    }
     catch(e){
         console.log(e)
         res.json({"error": e})
@@ -65,8 +66,9 @@ app.delete('/drinks/:naming', async (req, res) => {
     const destruction = prisma.drinks.delete({
         where:{naming: naming}
     })
-    res.json(destruction);}
+    res.json(destruction)}
     catch(e){
+        console.log(e)
         res.json({"error": e})
     }
 })
@@ -77,12 +79,13 @@ app.delete('/dishes/:naming', async (req, res) => {
     })
     res.json(destruction);}
     catch(e){
+        console.log(e)
         res.json({"error": e})
     }
 })
 
 app.put('/drinks/:naming', async (req, res) => {
-    const {naming} = req.params;
+    try{const {naming} = req.params;
     const {
         newNaming,
         newVolume, 
@@ -100,10 +103,14 @@ app.put('/drinks/:naming', async (req, res) => {
             saleInPercents: newSaleInPercents
         }
     })
-    res.json(put); 
+    res.json(put)}
+    catch(e){
+        console.log(e)
+        res.json({"error": e})
+    }
 })
 app.put('/drinks/:naming', async (req, res) => {
-    const {naming} = req.params;
+    try{const {naming} = req.params;
     const {
         newNaming,
         newIngredients, 
@@ -123,16 +130,28 @@ app.put('/drinks/:naming', async (req, res) => {
             saleInPercents: newSaleInPercents
         }
     })
-    res.json(put); 
+    res.json(put)}
+    catch(e){
+        console.log(e)
+        res.json({"error": e})
+    }
 })
 
 app.get('/drinks', async (req, res) => {
-    const drinks = await prisma.drinks.findMany()
-    res.json(drinks)
+    try{const drinks = await prisma.drinks.findMany()
+    res.json(drinks)}
+    catch(e){
+        console.log(e)
+        res.json({"error": e})
+    }
 })
 app.get('/dishes', async (req, res) => {
-    const dishes = await prisma.dishes.findMany()  
-    res.json(dishes)
+    try{const dishes = await prisma.dishes.findMany()  
+    res.json(dishes)}
+    catch(e){
+        console.log(e)
+        res.json({"error": e})
+    }
 })
 
 

@@ -1,16 +1,15 @@
 version: "3.8"
 services:
   # api:
+  #   depends_on:
+  #     - postgres
   #   build:
   #     dockerfile: Dockerfile 
   #     context: .
-  #   depends_on:
-  #     - postgres
   #   environment:
   #     URL: postgres://user:password@postgres:5432/database
-  #     PORT: 2000
   #   ports: 
-  #     - "2000:2000"
+  #     - "8080:8080"
   postgres:
     image: postgres:latest
     ports:
@@ -20,9 +19,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: database
     volumes:
-      - postgres:/var/lib/postgres/database
-volumes:
-  postgres:
+     - ./data/postgres:/data/postgres
 
 
 

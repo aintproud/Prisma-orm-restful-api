@@ -8,7 +8,4 @@ RUN npm i
 
 COPY . .
 
-
-EXPOSE 2000
-
-CMD ["node", "server"]
+CMD ["npm", "start"]

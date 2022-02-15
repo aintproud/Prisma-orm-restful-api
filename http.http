@@ -5,4 +5,15 @@ GET http://localhost:8080/dishes
 DELETE http://localhost:8080/drinks/Tea
 ###
 PUT http://localhost:8080/drinks/Tea
+
 {"newNaming": "Coffee"}
+###
+POST http://localhost:8080/drinks
+
+{
+            "naming": "Tea",
+            "volumeInMl": 300,
+            "priceInDollars": 20,
+    "hit": true,
+    "saleInPercents": 22
+        }
