@@ -5,26 +5,20 @@ const prisma = new PrismaClient()
 const port = process.env.PORT || 8080;
 import bodyparser from 'body-parser'
 
-app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({extended: true}));
+app.use(express.json());
+// app.use(bodyparser.urlencoded({extended: true}));
 
 app.post('/drinks', async(req, res)=>{
     try {
-        const {
-        naming, 
-        volumeInMl, 
-        priceInDollars, 
-        hit, 
-        saleInPercents
-    } = req.body
+        const {naming, volumeInMl, priceInDollars, hit, saleInPercents} = req.body
 
     const create = await prisma.drinks.create({
         data: {
-            naming: naming,
-            volumeInMl: volumeInMl,
-            priceInDollars: priceInDollars,
-            hit: hit,
-            saleInPercents: saleInPercents
+            naming,
+            volumeInMl,
+            priceInDollars,
+            hit,
+            saleInPercents
         }
     })
     res.json(create)
@@ -35,7 +29,8 @@ app.post('/drinks', async(req, res)=>{
     }
 })
 app.post('/dishes', async(req, res)=>{
-    try{const {
+    try{
+        const {
         naming, 
         ingredients, 
         timeInMinutes, 
@@ -60,7 +55,6 @@ app.post('/dishes', async(req, res)=>{
         res.json({"error": e})
     }
 })
-
 app.delete('/drinks/:naming', async (req, res) => {
     try {const {naming} = req.params;
     const destruction = prisma.drinks.delete({
